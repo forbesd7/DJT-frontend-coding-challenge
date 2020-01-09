@@ -6,12 +6,13 @@ class IssueFilter extends Component {
     this.state = {};
   }
   changeFilter = () => {
-    this.props.showSelectedIssueType(this.props.issueType);
+    this.props.switchFilter(this.props.issueType);
   };
   render() {
+    const { switchFilter, issueType } = this.props
     return (
-      <div onClick={this.changeFilter} className="issueType">
-        {this.props.issueType}
+      <div onClick={() => switchFilter(issueType)} className="issueType">
+        {issueType}
       </div>
     );
   }

@@ -9,12 +9,12 @@ class Issue extends Component {
   }
   render() {
     return (
-      <div className="issueContainer">
-        <div className="issueTitle">
+      <div className="issue">
+        <div className="issue__title">
           <div>{this.props.issueInfo.issueTitle}</div>
         </div>
-        <div className="issueBody">{this.props.issueInfo.issueBody}</div>
-        <div className="issueLabelsContainer">
+        <div className="issue__body">{this.props.issueInfo.issueBody}</div>
+        <div className="issue__labels">
           {this.props.issueInfo.issueLabels.map((label, index) => {
             return <IssueLabel label={label} key={index} />;
           })}

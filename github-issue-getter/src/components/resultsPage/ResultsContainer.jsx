@@ -3,65 +3,61 @@ import Issue from "./Issue";
 import ResultsNavBar from "./ResultsNavbar";
 import IssueFilter from "./IssueFilter";
 import "./styles/resultsContainer.scss";
+
+const ISSUETYPES = [  // enum constants should live outside of the component and be written in all caps
+    "All Issues",
+    "Open Issues",
+    "Closed Issues",
+    "Pull Requests"
+  ]
 class ResultsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedIssueType: "All Issues",
-      issueTypeSelections: [
-        "All Issues",
-        "Open Issues",
-        "Closed Issues",
-        "Pull Requests"
-      ],
-      currentIssues: "",
-      noIssues: false
+      selectedIssueType: ISSUETYPES[0], // you should never repeat enum constants in an hard-coded way. 
+      currentIssues: [],
     };
   }
   componentDidMount() {
-    this.showSelectedIssueType("All Issues");
+    this.loadIssues()
   }
-  showSelectedIssueType = selectedType => {
-    let selectedTypeIssues;
-    //need to refactor this, just trying to get it working.
-    //ran out of time, apologies for the 3 warnings.
-    if (selectedType === "All Issues") {
-      selectedTypeIssues = this.props.issues.map((issue, index) => {
-        return <Issue issueInfo={issue} key={index} />;
-      });
-    } else if (selectedType === "Closed Issues") {
-      selectedTypeIssues = this.props.issues.map((issue, index) => {
-        if (issue.issueState === "closed") {
-          return <Issue issueInfo={issue} key={index} />;
-        }
-      });
-    } else if (selectedType === "Pull Requests") {
-      selectedTypeIssues = this.props.issues.map((issue, index) => {
-        if (issue.pullRequest === true) {
-          return <Issue issueInfo={issue} key={index} />;
-        }
-      });
-    } else if (selectedType === "Open Issues") {
-      selectedTypeIssues = this.props.issues.map((issue, index) => {
-        if (issue.issueState === "open") {
-          return <Issue issueInfo={issue} key={index} />;
-        }
-      });
+
+  loadIssues() { // case/switch style is easier to read here
+    switch (this.state.selectedIssueType) {
+      case "All Issues": return this.applyFilter(null)
+      case "Closed Issues": return this.applyFilter(this.isClosedIssue)
+      case "Pull Requests": return this.applyFilter(this.isPullRequest)
+      case "Open Issues": return this.applyFilter(this.isOpenIssue)
     }
-    if (selectedTypeIssues.length === 0) {
-      this.setState({ noIssues: true });
-    }
-    this.setState({ currentIssues: selectedTypeIssues });
-  };
+  }
+
+  isClosedIssue(issue) {
+    return issue.issueState === "closed"
+  }
+
+  isPullRequest(issue) {
+    return !!issue.pullRequest
+  }
+
+  isOpenIssue(issue) {
+    return issue.issueState === "open"
+  }
+
+  applyFilter(filterFunction = null) {
+    const filteredIssues = filterFunction ? this.props.issues.filter(issue => filterFunction(issue)) : this.props.issues
+    this.setState({ currentIssues: filteredIssues });
+  }
+
+  async switchFilter(newFilter) {
+    await this.setState({ selectedIssueType: newFilter}) // state changes are async
+    this.loadIssues()
+  }
+
+  renderIssues() {
+    return this.state.currentIssues.map((issue, index) => <Issue issueInfo={issue} key={index} />)
+  }
+
   render() {
-    let issueViewer;
-    if (this.state.noIssues === true) {
-      issueViewer = <div>No issues for this repo...</div>;
-    } else if (this.state.noIssues === false) {
-      issueViewer = (
-        <div className="issuesContainer">{this.state.currentIssues}</div>
-      );
-    }
     return (
       <div className="resultsContainer">
         <nav className="resultsNavbarContainer">
@@ -69,18 +65,22 @@ class ResultsContainer extends Component {
         </nav>
         {
           <div className="issueFilterContainer">
-            {this.state.issueTypeSelections.map((issueType, index) => {
+            {ISSUETYPES.map((issueType, index) => {
               return (
                 <IssueFilter
                   key={index}
-                  showSelectedIssueType={this.showSelectedIssueType}
+                  switchFilter={(newFilter) => this.switchFilter(newFilter)}
                   issueType={issueType}
                 />
               );
             })}
           </div>
         }
-        {issueViewer}
+        {this.state.currentIssues.length === 0 ? 
+          <div>No issues for this repo...</div> 
+          : 
+          <div className="issuesContainer">{this.renderIssues()}</div>
+        }
       </div>
     );
   }
