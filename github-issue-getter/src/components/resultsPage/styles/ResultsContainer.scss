@@ -1,51 +1,43 @@
 // I usually try to avoid styling with % because it's difficult to predict how it'll look like across all screens. 
 // Using 100vw is okay, but avoid anything lower than 100, like 80vw. It leads to unpredictable styling.
 
-.resultsContainer {
+.results {
   width: 100vw;
   height: 100vh;
-}
 
-.resultsNavbarContainer {
-  height: 8%;
-  background: #e91e63;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2%;
-}
-
-.issuesContainer {
-  height: 80%;
-  margin: 0 3% 0 3%; // this is a more DRY way to write it
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  grid-auto-rows: 180px;
-  grid-row-gap: 20px;
-  grid-column-gap: 20px;
-}
-
-.issueFilterContainer {
-  display: flex;
-  width: 30%;
-  color: #455a64;
-  margin-top: 2%;
-  margin-left: 2%;
-  margin-bottom: 2%;
-  font-size: 12px;
-  justify-content: space-between;
-}
-
-@media screen and (max-width: 1200px) {
-  .issueFilterContainer {
-    width: 60%;
-    margin-bottom: 5%;
+  &__navbar {
+    background: #e91e63;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 2rem;
   }
-}
 
-@media screen and (max-width: 400px) {
-  .issueFilterContainer {
-    width: 90%;
-    margin-bottom: 5%;
+  &__issues {
+    padding: 1rem 2rem; // this is a more DRY way to write it
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-auto-rows: 11.25rem;
+    grid-gap: 1.25rem;
+  }
+
+  &__filter {
+    display: flex;
+    color: #455a64;
+    padding: 0.5rem 3rem 1rem;
+    font-size: 0.8rem;
+
+    @media screen and (max-width: 400px) {
+      font-size: 0.7rem;
+      padding: 0.5rem 1rem;
+    }
+
+    .issueType + .issueType {
+      margin-left: 2rem;
+
+      @media screen and (max-width: 400px) {
+        margin-left: 1rem;
+      }
+    }
   }
 }

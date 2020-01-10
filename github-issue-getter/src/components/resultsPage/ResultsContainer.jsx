@@ -59,12 +59,12 @@ class ResultsContainer extends Component {
 
   render() {
     return (
-      <div className="resultsContainer">
-        <nav className="resultsNavbarContainer">
+      <div className="results">
+        <nav className="results__navbar">
           <ResultsNavBar gitHubLink={this.props.gitHubLink} />
         </nav>
         {
-          <div className="issueFilterContainer">
+          <div className="results__filter">
             {ISSUETYPES.map((issueType, index) => {
               return (
                 <IssueFilter
@@ -79,7 +79,7 @@ class ResultsContainer extends Component {
         {this.state.currentIssues.length === 0 ? 
           <div>No issues for this repo...</div> 
           : 
-          <div className="issuesContainer">{this.renderIssues()}</div>
+          <div className="results__issues">{this.renderIssues()}</div>
         }
       </div>
     );
